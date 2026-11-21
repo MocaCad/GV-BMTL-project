@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Engine test</title>
+<style>
+  body { font-family: monospace; font-size: 16px; padding: 12px; background: #111; color: #9f9; }
+  .fail { color: #f77; }
+</style>
+</head>
+<body>
+<h3>Engine test</h3>
+<pre id="out"></pre>
+
+<script src="engine.js"></script>
+<script>
+  function show(label, value, expected) {
+    let got = JSON.stringify(value);
+    let ok = got === expected;
+    let line = (ok ? "PASS  " : "FAIL  ") + label + ": " + got + (ok ? "" : "   (expected " + expected + ")");
+    let span = document.createElement("span");
+    span.textContent = line + "\n";
+    if (!ok) span.className = "fail";
+    document.getElementById("out").appendChild(span);
+  }
+
+  try {
+    // test 1: the school example
+    show("school example", solve_numbers([[2, 1], [4, 3]], [5, 11]), "[2,1]");
+
+    // test 2: the real thing (page at double size)
+    let flat = [[0, 0], [100, 0], [100, 100], [0, 100]];
+    let dots = [[0, 0], [200, 0], [200, 200], [0, 200]];
+    let [A, B] = numbers_looker(flat, dots);
+    let h = solve_numbers(A, B);
+    show("8 numbers", h, "[2,0,0,0,2,0,0,0]");
+
+    // test 3: using the numbers
+    show("pixel (100,100)", position_of_pixel(h, 100, 100), "[200,200]");
+    show("pixel (50,50)", position_of_pixel(h, 50, 50), "[100,100]");
+  } catch (err) {
+    let span = document.createElement("span");
+    span.className = "fail";
+    span.textContent = "ERROR: " + err.message;
+    document.getElementById("out").appendChild(span);
+  }
+</script>
+</body>
+</html>
